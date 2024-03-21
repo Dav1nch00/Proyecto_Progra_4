@@ -1,2 +1,2 @@
 # Proyecto_Progra_4
-Proyecto Programacion 4
+Primera parte del proyecto
