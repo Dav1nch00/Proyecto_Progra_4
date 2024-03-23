@@ -13,6 +13,7 @@ public class Proyecto_Final {
         if (contador < registro.length) {
             System.out.println("FORMULARIO DE REGISTRO");
             System.out.println("Para realizar su registro porfavor completar la siguiente información: ");
+            scanner.nextLine();
             System.out.println("Tipo de identificación: ");
             registro[contador][0] = scanner.nextLine();
             System.out.println("Número de identificación: ");
@@ -32,12 +33,12 @@ public class Proyecto_Final {
             System.out.println("Contraseña: ");
             registro[contador][8] = scanner.nextLine();
             String contrasena = "";
-            boolean confirmar = false;
+            boolean confirmar = true;
             while (confirmar) {
                 System.out.println("confirme la contraseña: "); 
                 contrasena = scanner.nextLine();
                 if(contrasena.equals(registro[contador][8])){
-                    confirmar=true;
+                    confirmar=false;
                 }
             }
             registro[contador][9] = contrasena;
@@ -50,12 +51,24 @@ public class Proyecto_Final {
         scanner.nextLine();
         System.out.println("Ingrese su correo: ");
         String correo = scanner.nextLine();
-        System.out.println("Ingrese su contraseña: ");
-        String contrasena = scanner.nextLine();
         int contador = 0;
         while(contador < registro.length){
-            if(correo.equals(registro[contador][4]) && contrasena.equals(registro[contador][8])){
-                return true;
+            if(correo.equals(registro[contador][4])){
+                int verificar_contrasena = 0;
+                while(verificar_contrasena < 3){
+                    System.out.println("Ingrese su contraseña: ");
+                    String contrasena = scanner.nextLine();
+                    if(contrasena.equals(registro[contador][8])){
+                        return true;
+
+                    }else{
+                        System.out.println("contraseña incorrecta");
+                        verificar_contrasena = verificar_contrasena +1;
+                    }
+
+                }
+                contador = contador + 1;
+                
             }
             else{
                 contador = contador + 1;
