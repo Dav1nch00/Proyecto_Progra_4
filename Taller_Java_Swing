@@ -1,1 +1,205 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Proyecto_Final extends JFrame {
+
+    private JTextField txtCorreo;
+    private JPasswordField txtContrasena;
+
+    private String[][] registro = new String[10][10];
+
+    public Proyecto_Final() {
+        setTitle("My Hotel");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(3, 1, 10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JPanel correoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel lblCorreo = new JLabel("Correo:");
+        txtCorreo = new JTextField(20);
+        correoPanel.add(lblCorreo);
+        correoPanel.add(txtCorreo);
+
+        JPanel contrasenaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel lblContrasena = new JLabel("Contraseña:");
+        txtContrasena = new JPasswordField(20);
+        contrasenaPanel.add(lblContrasena);
+        contrasenaPanel.add(txtContrasena);
+
+        JPanel botonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton btnIniciarSesion = new JButton("Iniciar Sesión");
+        JButton btnRegistrar = new JButton("Registrar Usuario");
+
+        btnIniciarSesion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                iniciarSesion();
+            }
+        });
+
+        btnRegistrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarRegistro();
+            }
+        });
+
+        botonPanel.add(btnIniciarSesion);
+        botonPanel.add(btnRegistrar);
+
+        mainPanel.add(correoPanel);
+        mainPanel.add(contrasenaPanel);
+        mainPanel.add(botonPanel);
+
+        add(mainPanel);
+
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private boolean iniciarSesion() {
+        String correo = txtCorreo.getText();
+        String contrasena = new String(txtContrasena.getPassword());
+
+        for (String[] usuario : registro) {
+            if (usuario[4] != null && usuario[4].equals(correo) && usuario[8].equals(contrasena)) {
+                JOptionPane.showMessageDialog(this, "¡Bienvenido a My Hotel!", "Inicio de Sesión Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                return true;
+            }
+        }
+
+        JOptionPane.showMessageDialog(this, "Correo electrónico o contraseña incorrectos", "Error de Inicio de Sesión", JOptionPane.ERROR_MESSAGE);
+        return false;
+    }
+
+    private void mostrarRegistro() {
+        RegistroUsuarioGUI registroGUI = new RegistroUsuarioGUI(this);
+        registroGUI.setVisible(true);
+    }
+
+    public void registrarUsuario(String[] usuario) {
+        int contador = 0;
+        while (contador < registro.length && registro[contador][0] != null) {
+            contador++;
+        }
+        if (contador < registro.length) {
+            registro[contador] = usuario;
+            JOptionPane.showMessageDialog(this, "Usuario registrado satisfactoriamente", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "El registro está lleno. No se pueden agregar más usuarios.", "Error de Registro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new Proyecto_Final();
+            }
+        });
+    }
+}
+
+class RegistroUsuarioGUI extends JFrame {
+
+    private JTextField txtTipoIdentificacion, txtDocumentoIdentificacion, txtNombres, txtApellidos,
+            txtCorreo, txtDireccionResidencia, txtCiudadResidencia, txtTelefono, txtContrasena,
+            txtConfirmarContrasena;
+
+    private Proyecto_Final parent;
+
+    public RegistroUsuarioGUI(Proyecto_Final parent) {
+        this.parent = parent;
+
+        setTitle("Registro de Usuario");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(13, 1, 10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        txtTipoIdentificacion = new JTextField(20);
+        txtDocumentoIdentificacion = new JTextField(20);
+        txtNombres = new JTextField(20);
+        txtApellidos = new JTextField(20);
+        txtCorreo = new JTextField(20);
+        txtDireccionResidencia = new JTextField(20);
+        txtCiudadResidencia = new JTextField(20);
+        txtTelefono = new JTextField(20);
+        txtContrasena = new JPasswordField(20);
+        txtConfirmarContrasena = new JPasswordField(20);
+
+        mainPanel.add(new JLabel("Tipo de Identificación:"));
+        mainPanel.add(txtTipoIdentificacion);
+        mainPanel.add(new JLabel("Documento de Identificación:"));
+        mainPanel.add(txtDocumentoIdentificacion);
+        mainPanel.add(new JLabel("Nombres:"));
+        mainPanel.add(txtNombres);
+        mainPanel.add(new JLabel("Apellidos:"));
+        mainPanel.add(txtApellidos);
+        mainPanel.add(new JLabel("Correo:"));
+        mainPanel.add(txtCorreo);
+        mainPanel.add(new JLabel("Dirección de Residencia:"));
+        mainPanel.add(txtDireccionResidencia);
+        mainPanel.add(new JLabel("Ciudad de Residencia:"));
+        mainPanel.add(txtCiudadResidencia);
+        mainPanel.add(new JLabel("Teléfono:"));
+        mainPanel.add(txtTelefono);
+        mainPanel.add(new JLabel("Contraseña:"));
+        mainPanel.add(txtContrasena);
+        mainPanel.add(new JLabel("Confirmar Contraseña:"));
+        mainPanel.add(txtConfirmarContrasena);
+
+        JButton btnRegistrarUsuario = new JButton("Registrar Usuario");
+        btnRegistrarUsuario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                registrarUsuario();
+            }
+        });
+        mainPanel.add(btnRegistrarUsuario);
+
+        add(mainPanel);
+
+        pack();
+        setLocationRelativeTo(parent);
+    }
+
+    private void registrarUsuario() {
+        String tipoIdentificacion = txtTipoIdentificacion.getText();
+        String documentoIdentificacion = txtDocumentoIdentificacion.getText();
+        String nombres = txtNombres.getText();
+        String apellidos = txtApellidos.getText();
+        String correo = txtCorreo.getText();
+        String direccionResidencia = txtDireccionResidencia.getText();
+        String ciudadResidencia = txtCiudadResidencia.getText();
+        String telefono = txtTelefono.getText();
+        String contrasena = txtContrasena.getText();
+        
+        
+        int verificar = 0;
+        while (verificar < 3) {
+            String confirmarContrasena = txtConfirmarContrasena.getText();
+            if (!contrasena.equals(confirmarContrasena)) {
+                JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden", "Error de Registro", JOptionPane.ERROR_MESSAGE);
+                
+                return;
+            }
+            
+        }
+        
+
+        String[] usuario = {tipoIdentificacion, documentoIdentificacion, nombres, apellidos, correo,
+                            direccionResidencia, ciudadResidencia, telefono, contrasena, confirmarContrasena};
+
+        parent.registrarUsuario(usuario);
+        dispose();
+    }
+}
 
