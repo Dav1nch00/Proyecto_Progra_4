@@ -9,7 +9,7 @@ public class Proyecto_Final extends JFrame {
     private JPasswordField txtContrasena;
 
     private String[][] registro = new String[10][10];
-
+    
     public Proyecto_Final() {
         setTitle("My Hotel");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,7 +79,7 @@ public class Proyecto_Final extends JFrame {
     }
 
     private void mostrarRegistro() {
-        RegistroUsuarioGUI registroGUI = new RegistroUsuarioGUI(this);
+        RegistroUsuario registroGUI = new RegistroUsuario(this);
         registroGUI.setVisible(true);
     }
 
@@ -105,7 +105,7 @@ public class Proyecto_Final extends JFrame {
     }
 }
 
-class RegistroUsuarioGUI extends JFrame {
+class RegistroUsuario extends JFrame {
 
     private JTextField txtTipoIdentificacion, txtDocumentoIdentificacion, txtNombres, txtApellidos,
             txtCorreo, txtDireccionResidencia, txtCiudadResidencia, txtTelefono, txtContrasena,
@@ -113,7 +113,9 @@ class RegistroUsuarioGUI extends JFrame {
 
     private Proyecto_Final parent;
 
-    public RegistroUsuarioGUI(Proyecto_Final parent) {
+    private int intentosContraseña = 3;
+
+    public RegistroUsuario(Proyecto_Final parent) {
         this.parent = parent;
 
         setTitle("Registro de Usuario");
@@ -181,25 +183,23 @@ class RegistroUsuarioGUI extends JFrame {
         String ciudadResidencia = txtCiudadResidencia.getText();
         String telefono = txtTelefono.getText();
         String contrasena = txtContrasena.getText();
-        
-        
-        int verificar = 0;
-        while (verificar < 3) {
-            String confirmarContrasena = txtConfirmarContrasena.getText();
-            if (!contrasena.equals(confirmarContrasena)) {
-                JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden", "Error de Registro", JOptionPane.ERROR_MESSAGE);
-                
-                return;
-            }
-            
+        String confirmarContrasena = txtConfirmarContrasena.getText();
+
+        if (!contrasena.equals(confirmarContrasena)) {
+            JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden", "Error de Registro", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        
 
-        String[] usuario = {tipoIdentificacion, documentoIdentificacion, nombres, apellidos, correo,
-                            direccionResidencia, ciudadResidencia, telefono, contrasena, confirmarContrasena};
+        if (intentosContraseña > 0) {
+            String[] usuario = {tipoIdentificacion, documentoIdentificacion, nombres, apellidos, correo,
+                                direccionResidencia, ciudadResidencia, telefono, contrasena, confirmarContrasena};
 
-        parent.registrarUsuario(usuario);
-        dispose();
+            parent.registrarUsuario(usuario);
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Ha excedido el número máximo de intentos para ingresar la misma contraseña", "Error de Registro", JOptionPane.ERROR_MESSAGE);
+            parent.setVisible(true);
+            dispose();
+        }
     }
 }
-
