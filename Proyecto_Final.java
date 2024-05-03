@@ -1,122 +1,549 @@
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Proyecto_Final {
-    
-    public static String[][] registro = new String[10][10];
-    public static Scanner scanner = new Scanner(System.in);
+public class Proyecto_Final extends JFrame {
 
-    public static void formularioDeRegistro(){
-        int contador = 0;
-        while (contador < registro.length && registro[contador][0] != null) {
-            contador++;
-        }
-        if (contador < registro.length) {
-            System.out.println("FORMULARIO DE REGISTRO");
-            System.out.println("Para realizar su registro porfavor completar la siguiente información: ");
-            scanner.nextLine();
-            System.out.println("Tipo de identificación: ");
-            registro[contador][0] = scanner.nextLine();
-            System.out.println("Número de identificación: ");
-            registro[contador][1] = scanner.nextLine();
-            System.out.println("Nombres: ");
-            registro[contador][2] = scanner.nextLine();
-            System.out.println("Apellidos: ");
-            registro[contador][3] = scanner.nextLine();
-            System.out.println("Correo electrónico: ");
-            registro[contador][4] = scanner.nextLine();
-            System.out.println("Dirección de residencia: ");
-            registro[contador][5] = scanner.nextLine();
-            System.out.println("Ciudad de residencia: ");
-            registro[contador][6] = scanner.nextLine();
-            System.out.println("Teléfono de contacto: ");
-            registro[contador][7] = scanner.nextLine();
-            System.out.println("Contraseña: ");
-            registro[contador][8] = scanner.nextLine();
-            String contrasena = "";
-            boolean confirmar = true;
-            while (confirmar) {
-                System.out.println("confirme la contraseña: "); 
-                contrasena = scanner.nextLine();
-                if(contrasena.equals(registro[contador][8])){
-                    confirmar=false;
-                }
-            }
-            registro[contador][9] = contrasena;
-        } else {
-            System.out.println("El registro está lleno. No se pueden agregar más registros.");
-        }
+    private List<Usuario> registro = new ArrayList<>(); // Lista para almacenar usuarios registrados
+
+    // Método para obtener el registro de usuarios
+    public List<Usuario> getRegistro() {
+        return registro;
     }
 
-    public static boolean IniciarSesion(){
-        scanner.nextLine();
-        System.out.println("Ingrese su correo: ");
-        String correo = scanner.nextLine();
-        int contador = 0;
-        while(contador < registro.length){
-            if(correo.equals(registro[contador][4])){
-                int verificar_contrasena = 0;
-                while(verificar_contrasena < 3){
-                    System.out.println("Ingrese su contraseña: ");
-                    String contrasena = scanner.nextLine();
-                    if(contrasena.equals(registro[contador][8])){
-                        return true;
+    public Proyecto_Final() {
+        setTitle("Bienvenido a My Hotel");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
 
-                    }else{
-                        System.out.println("contraseña incorrecta");
-                        verificar_contrasena = verificar_contrasena +1;
-                    }
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(2, 1, 10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-                }
-                contador = contador + 1;
-                
+        JButton btnIniciarSesion = new JButton("Iniciar Sesión");
+        JButton btnRegistrar = new JButton("Registrarse");
+
+        btnIniciarSesion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarVentanaInicioSesion();
             }
-            else{
-                contador = contador + 1;
-            }
-        }
-        return false;
-        
+        });
 
+        btnRegistrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarVentanaRegistro();
+            }
+        });
+
+        mainPanel.add(btnIniciarSesion);
+        mainPanel.add(btnRegistrar);
+
+        add(mainPanel);
+
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
-    public static void MostrarMenu() {
-        boolean MostrarMenu = true;
+    private void mostrarVentanaInicioSesion() {
+        VentanaInicioSesion ventanaInicioSesion = new VentanaInicioSesion(registro);
+        ventanaInicioSesion.setVisible(true);
+        setVisible(false); // Ocultar la ventana actual
+    }
 
-        while(MostrarMenu){
-            System.out.println("\n\nBienvenido a My Hotel...\n"+ "Mas que un lugar para descansar.");
-            System.out.println("-----------------------------------------------------------\n\n");
-            System.out.println("Ingrese la opción deseada");
-            System.out.println("1. Registrarse como cliente");
-            System.out.println("2. Iniciar Sesión");
-            System.out.println("3. Salir\n\n");
-
-            byte option = scanner.nextByte();
-
-            switch(option){
-                case 1:
-                    formularioDeRegistro();
-                    break;
-                case 2:
-                    System.out.println("Iniciar Sesión");
-                    if(IniciarSesion()){
-                        System.out.println("Se inicio sesion correctamente");
-                    }else{
-                        System.out.println("no se pudo iniciar sesion verifique los datos");
-                    }
-                    break;
-                case 3:
-                    MostrarMenu = false;
-                    break;
-                default:
-                    System.out.println("Opción no válida, ingrese otra opcion");
-                    break;
-            }
-        }
+    private void mostrarVentanaRegistro() {
+        RegistroUsuario registroUsuario = new RegistroUsuario(this);
+        registroUsuario.setVisible(true);
+        setVisible(false); // Ocultar la ventana actual
     }
 
     public static void main(String[] args) {
-        MostrarMenu();
-        scanner.close();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new Proyecto_Final();
+            }
+        });
+    }
+}
+
+
+
+class VentanaInicioSesion extends JFrame {
+    private JTextField txtCorreo;
+    private JPasswordField txtContrasena;
+    private List<Usuario> listaUsuarios; // Lista donde se almacenan los usuarios registrados
+
+    public VentanaInicioSesion(List<Usuario> listaUsuarios) {
+        this.listaUsuarios = listaUsuarios;
+
+        setTitle("Iniciar Sesión");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(3, 1, 10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JPanel correoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel lblCorreo = new JLabel("Correo:");
+        txtCorreo = new JTextField(20);
+        correoPanel.add(lblCorreo);
+        correoPanel.add(txtCorreo);
+
+        JPanel contrasenaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel lblContrasena = new JLabel("Contraseña:");
+        txtContrasena = new JPasswordField(20);
+        contrasenaPanel.add(lblContrasena);
+        contrasenaPanel.add(txtContrasena);
+
+        JPanel botonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton btnIniciarSesion = new JButton("Iniciar Sesión");
+
+        btnIniciarSesion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String correo = txtCorreo.getText();
+                String contrasena = new String(txtContrasena.getPassword());
+
+                // Validar el inicio de sesión
+                if (validarInicioSesion(correo, contrasena)) {
+                    // Si el inicio de sesión es exitoso, abrir el JFrame de inicio correspondiente
+                    abrirJFrameInicio();
+                } else {
+                    JOptionPane.showMessageDialog(VentanaInicioSesion.this, "Correo electrónico o contraseña incorrectos", "Error de Inicio de Sesión", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        botonPanel.add(btnIniciarSesion);
+
+        mainPanel.add(correoPanel);
+        mainPanel.add(contrasenaPanel);
+        mainPanel.add(botonPanel);
+
+        add(mainPanel);
+
+        pack();
+        setLocationRelativeTo(null);
+    }
+
+    private boolean validarInicioSesion(String correo, String contrasena) {
+        // Recorrer la lista de usuarios registrados y comparar el correo y la contraseña
+        for (Usuario usuario : listaUsuarios) {
+            if (usuario.getCorreo().equals(correo) && usuario.getContrasena().equals(contrasena)) {
+                return true; // Inicio de sesión exitoso
+            }
+        }
+        return false; // Inicio de sesión fallido
+    }
+
+    private void abrirJFrameInicio() {
+        // Obtener el usuario que inició sesión
+        Usuario usuario = obtenerUsuario(txtCorreo.getText());
+    
+        // Verificar el rol del usuario
+        if (usuario != null) {
+            if (usuario.getRol().equals("Administrador")) {
+                // Si es administrador, abrir JFrame de opciones de administrador
+                abrirJFrameOpcionesAdministrador();
+            } else {
+                // Si es cliente, abrir JFrame de opciones de cliente
+                abrirJFrameOpcionesCliente();
+            }
+        } else {
+            JOptionPane.showMessageDialog(VentanaInicioSesion.this, "Error al obtener información del usuario", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
+    private Usuario obtenerUsuario(String correo) {
+        // Buscar el usuario en la lista de usuarios
+        for (Usuario u : listaUsuarios) {
+            if (u.getCorreo().equals(correo)) {
+                return u;
+            }
+        }
+        return null; // Usuario no encontrado
+    }
+    
+    private void abrirJFrameOpcionesAdministrador() {
+        JFrame opcionesAdmin = new JFrame("Opciones del Administrador");
+        opcionesAdmin.setSize(400, 300);
+        opcionesAdmin.setLocationRelativeTo(null);
+        
+        // Panel principal para organizar los componentes
+        JPanel panelAdmin = new JPanel();
+        panelAdmin.setLayout(new GridLayout(6, 1, 10, 10)); // Se pueden ajustar las filas y columnas según sea necesario
+        
+        // Botones para las opciones del administrador
+        JButton btnVerificarDisponibilidad = new JButton("Verificar Disponibilidad");
+        JButton btnAgregarHabitacion = new JButton("Agregar Habitación al Inventario");
+        JButton btnEditarHabitacion = new JButton("Editar Habitación en el Inventario");
+        JButton btnEliminarHabitacion = new JButton("Eliminar Habitación del Inventario");
+        
+        // Agregar los botones al panel
+        panelAdmin.add(btnVerificarDisponibilidad);
+        panelAdmin.add(btnAgregarHabitacion);
+        panelAdmin.add(btnEditarHabitacion);
+        panelAdmin.add(btnEliminarHabitacion);
+        
+        btnVerificarDisponibilidad.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirVentanaEnBlanco("Verificar Disponibilidad");
+            }
+        });
+    
+        // Acción del botón "Agregar Habitación al Inventario"
+        btnAgregarHabitacion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirVentanaEnBlanco("Agregar Habitación al Inventario");
+            }
+        });
+    
+        // Acción del botón "Editar Habitación en el Inventario"
+        btnEditarHabitacion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirVentanaEnBlanco("Editar Habitación en el Inventario");
+            }
+        });
+    
+        // Acción del botón "Eliminar Habitación del Inventario"
+        btnEliminarHabitacion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirVentanaEnBlanco("Eliminar Habitación del Inventario");
+            }
+        });
+        
+        // Agregar el panel al JFrame
+        opcionesAdmin.add(panelAdmin);
+        
+        opcionesAdmin.setVisible(true);
+    
+    }
+    
+    private void abrirJFrameOpcionesCliente() {
+        JFrame opcionesCliente = new JFrame("Opciones del Cliente");
+        opcionesCliente.setSize(400, 300);
+        opcionesCliente.setLocationRelativeTo(null);
+        
+        // Panel principal para organizar los componentes
+        JPanel panelCliente = new JPanel();
+        panelCliente.setLayout(new GridLayout(6, 1, 10, 10)); // Se pueden ajustar las filas y columnas según sea necesario
+        
+        // Botones para las opciones del cliente
+        JButton btnBuscarHabitaciones = new JButton("Buscar Habitaciones Disponibles");
+        JButton btnVerDetalles = new JButton("Ver Detalles de Habitación");
+        JButton btnRealizarReserva = new JButton("Realizar una Reserva");
+        JButton btnModificarReserva = new JButton("Modificar Reserva");
+        JButton btnCancelarReserva = new JButton("Cancelar Reserva");
+        JButton btnVerHistorial = new JButton("Ver Historial de Reservas");
+        
+        // Agregar los botones al panel
+        panelCliente.add(btnBuscarHabitaciones);
+        panelCliente.add(btnVerDetalles);
+        panelCliente.add(btnRealizarReserva);
+        panelCliente.add(btnModificarReserva);
+        panelCliente.add(btnCancelarReserva);
+        panelCliente.add(btnVerHistorial);
+        
+        btnBuscarHabitaciones.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirVentanaEnBlanco("Buscar Habitaciones Disponibles");
+            }
+        });
+    
+        // Acción del botón "Ver Detalles de Habitación"
+        btnVerDetalles.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirVentanaEnBlanco("Ver Detalles de Habitación");
+            }
+        });
+    
+        // Acción del botón "Realizar una Reserva"
+        btnRealizarReserva.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirVentanaEnBlanco("Realizar una Reserva");
+            }
+        });
+    
+        // Acción del botón "Modificar Reserva"
+        btnModificarReserva.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirVentanaEnBlanco("Modificar Reserva");
+            }
+        });
+    
+        // Acción del botón "Cancelar Reserva"
+        btnCancelarReserva.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirVentanaEnBlanco("Cancelar Reserva");
+            }
+        });
+    
+        // Acción del botón "Ver Historial de Reservas"
+        btnVerHistorial.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirVentanaEnBlanco("Ver Historial de Reservas");
+            }
+        });
+
+        // Agregar el panel al JFrame
+        opcionesCliente.add(panelCliente);
+        
+        opcionesCliente.setVisible(true);
+    }
+
+    private void abrirVentanaEnBlanco(String titulo) {
+        JFrame ventana = new JFrame(titulo);
+        ventana.setSize(400, 300);
+        ventana.setLocationRelativeTo(null);
+        ventana.setVisible(true);
+    }
+
+    
 }
+
+
+class RegistroUsuario extends JFrame {
+    private JTextField txtTipoIdentificacion, txtDocumentoIdentificacion, txtNombres, txtApellidos,
+            txtCorreo, txtDireccionResidencia, txtCiudadResidencia, txtTelefono, txtContrasena,
+            txtConfirmarContrasena;
+
+    private Proyecto_Final parent;
+    private JComboBox<String> comboBoxRol;
+
+    public RegistroUsuario(Proyecto_Final parent) {
+        this.parent = parent;
+
+        setTitle("Registro de Usuario");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(13, 1, 10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        txtTipoIdentificacion = new JTextField(20);
+        txtDocumentoIdentificacion = new JTextField(20);
+        txtNombres = new JTextField(20);
+        txtApellidos = new JTextField(20);
+        txtCorreo = new JTextField(20);
+        txtDireccionResidencia = new JTextField(20);
+        txtCiudadResidencia = new JTextField(20);
+        txtTelefono = new JTextField(20);
+        txtContrasena = new JPasswordField(20);
+        txtConfirmarContrasena = new JPasswordField(20);
+        comboBoxRol = new JComboBox<>(new String[]{"Cliente", "Administrativo"});
+        
+        
+
+        mainPanel.add(new JLabel("Tipo de Identificación:"));
+        mainPanel.add(txtTipoIdentificacion);
+        mainPanel.add(new JLabel("Documento de Identificación:"));
+        mainPanel.add(txtDocumentoIdentificacion);
+        mainPanel.add(new JLabel("Nombres:"));
+        mainPanel.add(txtNombres);
+        mainPanel.add(new JLabel("Apellidos:"));
+        mainPanel.add(txtApellidos);
+        mainPanel.add(new JLabel("Correo:"));
+        mainPanel.add(txtCorreo);
+        mainPanel.add(new JLabel("Dirección de Residencia:"));
+        mainPanel.add(txtDireccionResidencia);
+        mainPanel.add(new JLabel("Ciudad de Residencia:"));
+        mainPanel.add(txtCiudadResidencia);
+        mainPanel.add(new JLabel("Teléfono:"));
+        mainPanel.add(txtTelefono);
+        mainPanel.add(new JLabel("Contraseña:"));
+        mainPanel.add(txtContrasena);
+        mainPanel.add(new JLabel("Confirmar Contraseña:"));
+        mainPanel.add(txtConfirmarContrasena);
+        mainPanel.add(new JLabel("Rol:"));
+        mainPanel.add(comboBoxRol);
+
+        
+
+        JButton btnRegistrarUsuario = new JButton("Registrar Usuario");
+        btnRegistrarUsuario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                registrarUsuario();
+            }
+        });
+        
+        mainPanel.add(btnRegistrarUsuario);
+
+        add(mainPanel);
+
+        pack();
+        setLocationRelativeTo(parent);
+    }
+
+    
+
+    private void registrarUsuario() {
+        String tipoIdentificacion = txtTipoIdentificacion.getText();
+        String documentoIdentificacion = txtDocumentoIdentificacion.getText();
+        String nombres = txtNombres.getText();
+        String apellidos = txtApellidos.getText();
+        String correo = txtCorreo.getText();
+        String direccionResidencia = txtDireccionResidencia.getText();
+        String ciudadResidencia = txtCiudadResidencia.getText();
+        String telefono = txtTelefono.getText();
+        String contrasena = txtContrasena.getText();
+        String confirmarContrasena = txtConfirmarContrasena.getText();
+        
+
+        if (!contrasena.equals(confirmarContrasena)) {
+            JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden", "Error de Registro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int asignar = obtenerRolSeleccionado();
+        String rol;
+        if(asignar == 1){
+            rol = "Administrador";
+        }else{
+            rol = "Cliente";
+        }
+        
+
+        Usuario usuario = new Usuario(tipoIdentificacion, documentoIdentificacion, nombres, apellidos, correo, direccionResidencia, ciudadResidencia, telefono, contrasena, rol);
+        // Agregar usuario a la lista de usuarios (registro)
+        parent.getRegistro().add(usuario);
+
+       
+
+        JOptionPane.showMessageDialog(this, "Usuario registrado satisfactoriamente", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
+        dispose(); // Cerrar la ventana de registro
+        parent.setVisible(true);
+    }
+
+    private int obtenerRolSeleccionado() {
+        // Obtener el rol seleccionado del JComboBox
+        return comboBoxRol.getSelectedIndex(); // Devuelve 0 para Cliente y 1 para Administrativo
+    }
+
+}
+
+class Usuario {
+    private String tipoIdentificacion;
+    private String documentoIdentificacion;
+    private String nombres;
+    private String apellidos;
+    private String correo;
+    private String direccionResidencia;
+    private String ciudadResidencia;
+    private String telefono;
+    private String contrasena;
+    private String rol;
+    
+
+    public Usuario(String tipoIdentificacion, String documentoIdentificacion, String nombres, String apellidos, String correo, String direccionResidencia, String ciudadResidencia, String telefono, String contrasena, String rol) {
+        this.tipoIdentificacion = tipoIdentificacion;
+        this.documentoIdentificacion = documentoIdentificacion;
+        this.nombres = nombres;
+        this.apellidos = apellidos;
+        this.correo = correo;
+        this.direccionResidencia = direccionResidencia;
+        this.ciudadResidencia = ciudadResidencia;
+        this.telefono = telefono;
+        this.contrasena = contrasena;
+        this.rol = rol; 
+    }
+
+    // Getters y Setters
+    public String getTipoIdentificacion() {
+        return tipoIdentificacion;
+    }
+
+    public void setTipoIdentificacion(String tipoIdentificacion) {
+        this.tipoIdentificacion = tipoIdentificacion;
+    }
+
+    public String getDocumentoIdentificacion() {
+        return documentoIdentificacion;
+    }
+
+    public void setDocumentoIdentificacion(String documentoIdentificacion) {
+        this.documentoIdentificacion = documentoIdentificacion;
+    }
+
+    public String getNombres() {
+        return nombres;
+    }
+
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public String getDireccionResidencia() {
+        return direccionResidencia;
+    }
+
+    public void setDireccionResidencia(String direccionResidencia) {
+        this.direccionResidencia = direccionResidencia;
+    }
+
+    public String getCiudadResidencia() {
+        return ciudadResidencia;
+    }
+
+    public void setCiudadResidencia(String ciudadResidencia) {
+        this.ciudadResidencia = ciudadResidencia;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+    
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+}
+
