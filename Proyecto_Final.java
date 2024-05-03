@@ -7,9 +7,8 @@ import java.util.List;
 
 public class Proyecto_Final extends JFrame {
 
-    private List<Usuario> registro = new ArrayList<>(); // Lista para almacenar usuarios registrados
+    private List<Usuario> registro = new ArrayList<>(); 
 
-    // Método para obtener el registro de usuarios
     public List<Usuario> getRegistro() {
         return registro;
     }
@@ -76,7 +75,7 @@ public class Proyecto_Final extends JFrame {
 class VentanaInicioSesion extends JFrame {
     private JTextField txtCorreo;
     private JPasswordField txtContrasena;
-    private List<Usuario> listaUsuarios; // Lista donde se almacenan los usuarios registrados
+    private List<Usuario> listaUsuarios; 
 
     public VentanaInicioSesion(List<Usuario> listaUsuarios) {
         this.listaUsuarios = listaUsuarios;
@@ -110,9 +109,9 @@ class VentanaInicioSesion extends JFrame {
                 String correo = txtCorreo.getText();
                 String contrasena = new String(txtContrasena.getPassword());
 
-                // Validar el inicio de sesión
+                
                 if (validarInicioSesion(correo, contrasena)) {
-                    // Si el inicio de sesión es exitoso, abrir el JFrame de inicio correspondiente
+                    
                     abrirJFrameInicio();
                 } else {
                     JOptionPane.showMessageDialog(VentanaInicioSesion.this, "Correo electrónico o contraseña incorrectos", "Error de Inicio de Sesión", JOptionPane.ERROR_MESSAGE);
@@ -133,7 +132,7 @@ class VentanaInicioSesion extends JFrame {
     }
 
     private boolean validarInicioSesion(String correo, String contrasena) {
-        // Recorrer la lista de usuarios registrados y comparar el correo y la contraseña
+        
         for (Usuario usuario : listaUsuarios) {
             if (usuario.getCorreo().equals(correo) && usuario.getContrasena().equals(contrasena)) {
                 return true; // Inicio de sesión exitoso
@@ -143,16 +142,16 @@ class VentanaInicioSesion extends JFrame {
     }
 
     private void abrirJFrameInicio() {
-        // Obtener el usuario que inició sesión
+        
         Usuario usuario = obtenerUsuario(txtCorreo.getText());
     
-        // Verificar el rol del usuario
+        
         if (usuario != null) {
             if (usuario.getRol().equals("Administrador")) {
-                // Si es administrador, abrir JFrame de opciones de administrador
+                
                 abrirJFrameOpcionesAdministrador();
             } else {
-                // Si es cliente, abrir JFrame de opciones de cliente
+                
                 abrirJFrameOpcionesCliente();
             }
         } else {
@@ -161,7 +160,7 @@ class VentanaInicioSesion extends JFrame {
     }
     
     private Usuario obtenerUsuario(String correo) {
-        // Buscar el usuario en la lista de usuarios
+        
         for (Usuario u : listaUsuarios) {
             if (u.getCorreo().equals(correo)) {
                 return u;
@@ -175,17 +174,17 @@ class VentanaInicioSesion extends JFrame {
         opcionesAdmin.setSize(400, 300);
         opcionesAdmin.setLocationRelativeTo(null);
         
-        // Panel principal para organizar los componentes
-        JPanel panelAdmin = new JPanel();
-        panelAdmin.setLayout(new GridLayout(6, 1, 10, 10)); // Se pueden ajustar las filas y columnas según sea necesario
         
-        // Botones para las opciones del administrador
+        JPanel panelAdmin = new JPanel();
+        panelAdmin.setLayout(new GridLayout(6, 1, 10, 10)); 
+        
+        
         JButton btnVerificarDisponibilidad = new JButton("Verificar Disponibilidad");
         JButton btnAgregarHabitacion = new JButton("Agregar Habitación al Inventario");
         JButton btnEditarHabitacion = new JButton("Editar Habitación en el Inventario");
         JButton btnEliminarHabitacion = new JButton("Eliminar Habitación del Inventario");
         
-        // Agregar los botones al panel
+        
         panelAdmin.add(btnVerificarDisponibilidad);
         panelAdmin.add(btnAgregarHabitacion);
         panelAdmin.add(btnEditarHabitacion);
@@ -198,7 +197,7 @@ class VentanaInicioSesion extends JFrame {
             }
         });
     
-        // Acción del botón "Agregar Habitación al Inventario"
+        
         btnAgregarHabitacion.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -206,7 +205,7 @@ class VentanaInicioSesion extends JFrame {
             }
         });
     
-        // Acción del botón "Editar Habitación en el Inventario"
+        
         btnEditarHabitacion.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -214,7 +213,7 @@ class VentanaInicioSesion extends JFrame {
             }
         });
     
-        // Acción del botón "Eliminar Habitación del Inventario"
+        
         btnEliminarHabitacion.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -222,7 +221,7 @@ class VentanaInicioSesion extends JFrame {
             }
         });
         
-        // Agregar el panel al JFrame
+        
         opcionesAdmin.add(panelAdmin);
         
         opcionesAdmin.setVisible(true);
@@ -234,11 +233,11 @@ class VentanaInicioSesion extends JFrame {
         opcionesCliente.setSize(400, 300);
         opcionesCliente.setLocationRelativeTo(null);
         
-        // Panel principal para organizar los componentes
-        JPanel panelCliente = new JPanel();
-        panelCliente.setLayout(new GridLayout(6, 1, 10, 10)); // Se pueden ajustar las filas y columnas según sea necesario
         
-        // Botones para las opciones del cliente
+        JPanel panelCliente = new JPanel();
+        panelCliente.setLayout(new GridLayout(6, 1, 10, 10)); 
+        
+        
         JButton btnBuscarHabitaciones = new JButton("Buscar Habitaciones Disponibles");
         JButton btnVerDetalles = new JButton("Ver Detalles de Habitación");
         JButton btnRealizarReserva = new JButton("Realizar una Reserva");
@@ -246,7 +245,7 @@ class VentanaInicioSesion extends JFrame {
         JButton btnCancelarReserva = new JButton("Cancelar Reserva");
         JButton btnVerHistorial = new JButton("Ver Historial de Reservas");
         
-        // Agregar los botones al panel
+       
         panelCliente.add(btnBuscarHabitaciones);
         panelCliente.add(btnVerDetalles);
         panelCliente.add(btnRealizarReserva);
@@ -261,7 +260,7 @@ class VentanaInicioSesion extends JFrame {
             }
         });
     
-        // Acción del botón "Ver Detalles de Habitación"
+        
         btnVerDetalles.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -269,7 +268,7 @@ class VentanaInicioSesion extends JFrame {
             }
         });
     
-        // Acción del botón "Realizar una Reserva"
+        
         btnRealizarReserva.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -277,7 +276,7 @@ class VentanaInicioSesion extends JFrame {
             }
         });
     
-        // Acción del botón "Modificar Reserva"
+        
         btnModificarReserva.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -285,7 +284,7 @@ class VentanaInicioSesion extends JFrame {
             }
         });
     
-        // Acción del botón "Cancelar Reserva"
+        
         btnCancelarReserva.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -293,7 +292,7 @@ class VentanaInicioSesion extends JFrame {
             }
         });
     
-        // Acción del botón "Ver Historial de Reservas"
+        
         btnVerHistorial.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -301,7 +300,7 @@ class VentanaInicioSesion extends JFrame {
             }
         });
 
-        // Agregar el panel al JFrame
+        
         opcionesCliente.add(panelCliente);
         
         opcionesCliente.setVisible(true);
@@ -421,19 +420,19 @@ class RegistroUsuario extends JFrame {
         
 
         Usuario usuario = new Usuario(tipoIdentificacion, documentoIdentificacion, nombres, apellidos, correo, direccionResidencia, ciudadResidencia, telefono, contrasena, rol);
-        // Agregar usuario a la lista de usuarios (registro)
+        
         parent.getRegistro().add(usuario);
 
        
 
         JOptionPane.showMessageDialog(this, "Usuario registrado satisfactoriamente", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
-        dispose(); // Cerrar la ventana de registro
+        dispose(); 
         parent.setVisible(true);
     }
 
     private int obtenerRolSeleccionado() {
-        // Obtener el rol seleccionado del JComboBox
-        return comboBoxRol.getSelectedIndex(); // Devuelve 0 para Cliente y 1 para Administrativo
+        
+        return comboBoxRol.getSelectedIndex(); 
     }
 
 }
@@ -464,7 +463,7 @@ class Usuario {
         this.rol = rol; 
     }
 
-    // Getters y Setters
+    
     public String getTipoIdentificacion() {
         return tipoIdentificacion;
     }
