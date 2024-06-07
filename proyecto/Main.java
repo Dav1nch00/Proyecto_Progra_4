@@ -1,18 +1,18 @@
-import Controlador.RoomManager;
+import Controlador.ControladorHabitacion;
+import Controlador.ControladorReserva;
 import Controlador.ControladorUsuario;
-import Controlador.controladorReservas;
 import vista.ProyectoFinal;
 
 import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        // Crear instancia del controlador de usuarios y habitaciones
+        
         ControladorUsuario controladorUsuario = new ControladorUsuario();
-        RoomManager controladorHabitacion = new RoomManager();
-        controladorReservas controladorReservas = new controladorReservas();
+        ControladorHabitacion controladorHabitacion = new ControladorHabitacion();
+        ControladorReserva controladorReservas = new ControladorReserva(controladorHabitacion);
 
-        // Iniciar la aplicación mostrando la ventana principal
+        
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
